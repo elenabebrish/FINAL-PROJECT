@@ -1,3 +1,5 @@
+package Test;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -6,16 +8,18 @@ public class Main {
 
         final String dbURL = "jdbc:mysql://localhost:3306/guess_my_word_game";
         final String user = "root";
-        final String password = "0108";
+        final String password = "jemi0404";
         char again = 'y';
         Scanner scanner = new Scanner(System.in);
 
         try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
-//            readTopics(conn);
+            //readTopics(conn);
 //            readWords(conn);
 //            readScores(conn);
 
             printInstructions();
+            System.out.println(); //KRISTINE - ADDITIONAL SPACE FOR VISUAL LOOK
+            System.out.println("Please choose your option:"); //KRISTINE - USER FRIENDLY OPTION
 
             while (again == 'y') {
 
@@ -25,7 +29,15 @@ public class Main {
                     System.out.println("Lets Play! Ready, set, go...");
 
                     readTopics(conn);
-                    System.out.println("Enter Topic number");
+                    System.out.println("Enter Topic number:");
+                    int chooseTopic = scanner.nextInt();
+                    readWords(conn);
+
+                    //if(chooseTopic <=5 && chooseTopic >=1) {
+                    //  readWords(conn);
+                    //}
+
+
 
 //                    //Topic ID from 1 to 5, should be adjusted if new topic added
 //                    int chooseTopic = scanner.nextInt();
@@ -37,7 +49,16 @@ public class Main {
 //                        System.out.println("There is no such topic ID, please, enter valid one");
 //                    }
 
-                    System.out.println("Enter wished amount of moves (1-10)");
+
+
+
+
+                    //System.out.println("Enter wished amount of moves (1-10)");
+
+
+
+
+
 
                 }else if (action == '2') {
                     System.out.println("Enter new Topic");
@@ -62,11 +83,14 @@ public class Main {
 
                 }
 
-                printInstructions();
-                System.out.println("Hey, lets play again? y/n");
-                again = scanner.nextLine().charAt(0);
+
+
+                //printInstructions(); // KRISTINE - NOT NECESSARY
+
 
             }
+            System.out.println("Hey, lets play again? y/n"); //KRISTINE - MOVED TO ANOTHER LINE
+            again = scanner.nextLine().charAt(0); //KRISTINE - MOVED TO ANOTHER LINE
 
         }catch (SQLException e) {
             System.out.println("Something went wrong");
@@ -94,22 +118,25 @@ public class Main {
     }
 
     public static void readWords(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM words;";
+        String sql = "SELECT word FROM words WHERE topic_id = 1;";
 
         Statement statement = conn.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
 
         while (resultSet.next()) {
 
-            int word_id = resultSet.getInt(1);
-            int topic_id = resultSet.getInt(2);
-            String word = resultSet.getString(3);
+            String word = resultSet.getString("word");
 
-            String output = "Word list: \n\t Word ID: %d \n\t Topic ID: %d \n\t Word: %s";
-            System.out.println(String.format(output, word_id, topic_id, word));
+            System.out.println(String.format(word));
+
         }
 
+
+
     }
+
+
+
 
     public static void readScores(Connection conn) throws SQLException {
         String sql = "SELECT * FROM scores;";
@@ -165,7 +192,7 @@ public class Main {
     }
 
     public static void printInstructions(){
-        System.out.println("\nChoose and enter number to take fallowed action:");
+        System.out.println("\nChoose and enter number to take fallowed action:"); //  KRISTINE - CHANGE TO INTRODUCTION TO GAME RULES:
         System.out.println("\t 1 - to play game");
         System.out.println("\t 2 - to add new topic");
         System.out.println("\t 3 - to add new word");
