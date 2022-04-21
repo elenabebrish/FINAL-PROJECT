@@ -23,7 +23,7 @@ public class Main extends GuessMethods {
 
             System.out.println("Please, choose your option:");
             while (again == 'y') {
-                char action = scanner.nextLine().charAt(0);
+                char action = scanner.next().charAt(0);
                 if (action == '1') {
                     playTheGameAction(scanner, conn);
                 } else if (action == '2') {
@@ -35,9 +35,10 @@ public class Main extends GuessMethods {
                 } else if(action == '5') {
                     break;
                 }
+                System.out.println("Hey, lets play again? y/n");
+                again = scanner.next().charAt(0);
             }
-            System.out.println("Hey, lets play again? y/n");
-            again = scanner.nextLine().charAt(0);
+
         } catch (SQLException e) {
             System.out.println("Something went wrong");
         }

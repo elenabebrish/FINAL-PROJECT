@@ -46,8 +46,8 @@ public class GuessMethods {
         for (int index = 0; index < words.size(); index++) {
             // get topic by index
             TopicWord word = words.get(index);
-            // print our topic information
-            String output = "\t %d. %s";
+            // print out word list, no need, just for now for info
+            String output = "\t %d. %s ";
             System.out.printf((output) + "\n", index + 1, word.word);
         }
 
@@ -56,19 +56,47 @@ public class GuessMethods {
 
         List<Character> guesses = new ArrayList<Character>();
         System.out.println("Enter a letter");
-        String letter = scanner.nextLine();
+        //String letter = scanner.nextLine();
 
-        while (scanner.hasNext()) {
+/*        while (scanner.hasNext()) {
             guesses.add(letter.charAt(0));
+        }*/
+        boolean guessed = false;
+        int letterCount = 0;
+        for(int j =0; j < 10; j++){
+            letterCount = 0;
+            char ch = scanner.next().charAt(0);
+            //ch -= 32;
+            guesses.add(ch);
+            for (int i=0; i < wordToGuess.word.length(); i++) {
+                if(guesses.contains(wordToGuess.word.charAt(i))) {
+                    System.out.print(wordToGuess.word.charAt(i));
+                    letterCount++;
+                }else {
+                    System.out.print("-");
+                }
+            }
+            System.out.println();
+            if(letterCount == wordToGuess.word.length()){
+                guessed = true;
+                break;
+            }
+
         }
 
-        for (int i=0; i < wordToGuess.word.length(); i++) {
+        if(guessed){
+            System.out.println("You won");
+        }else {
+            System.out.println("You suck!");
+        }
+
+/*        for (int i=0; i < wordToGuess.word.length(); i++) {
             if(guesses.contains(wordToGuess.word.charAt(i))) {
                 System.out.println(wordToGuess.word.charAt(i));
             }else {
                 System.out.println("-");
             }
-        }
+        }*/
 
 
         //System.out.println("Enter wished amount of moves (1-10)");
@@ -206,3 +234,4 @@ class TopicWord {
     int topic_id;
     String word;
 }
+
