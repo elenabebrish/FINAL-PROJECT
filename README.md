@@ -33,7 +33,8 @@ CODE:
 Code is written in Java on IntellJ platform and database is created in MySQL Workbench.
 
 DB STRUCTURE:
-![DB_EER_Diagram_3_tables](https://user-images.githubusercontent.com/103490561/164620817-c7d27fe0-b82f-4bda-b908-47a31519b36b.png)
+![DB_EER_Diagram_3_tables](https://user-images.githubusercontent.com/103490561/164762499-fb2f72d3-e12b-467b-9272-c5f7c8f867e1.png)
+
 
 FLOW DIAGRAM:
 ![FD (1)](https://user-images.githubusercontent.com/103490561/164621166-250f5a1c-b99c-48b4-92b0-a7023f09f2f6.png)
