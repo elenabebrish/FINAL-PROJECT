@@ -8,7 +8,7 @@ import java.util.Scanner;
 //TODO - Ranking in Score Board have to change ID to index+1
 //     - Printout word (not guessed one) have to have first letter Upper
 //     - Option to guess/enter all word
-//     -
+//     - Fix how pts are counted (now by amount of guessed letters per word not per moves)
 //     -
 
 public class Main extends GuessMethods {

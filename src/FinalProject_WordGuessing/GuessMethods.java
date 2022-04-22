@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 public class GuessMethods {
+    //static Scanner scanner = new Scanner(System.in);
 
     public static void printInstructions() {
         System.out.println("\nChoose and enter number to take fallowed action:");
@@ -55,25 +56,38 @@ public class GuessMethods {
 
         boolean guessed = false;
         int letterCount = 0;
+        scanner.nextLine();
         for(int j =0; j < 10; j++){
             letterCount = 0;
-            char ch = scanner.next().toLowerCase(Locale.ROOT).charAt(0);
-            //ch -= 32;
-            guesses.add(ch);
-            for (int i=0; i < wordToGuess.word.length(); i++) {
-                if(guesses.contains(wordToGuess.word.charAt(i))) {
-                    //first letter printout Upper case
-                    if (i==0) {
-                        System.out.print(Character.toUpperCase(wordToGuess.word.charAt(i)));
-                    } else {
-                        System.out.print(wordToGuess.word.charAt(i));
-                    }
-                    letterCount++;
-                }else {
-                    System.out.print("-");
+
+            String input = scanner.nextLine().toLowerCase();
+            if(input.length() > 1){
+                System.out.println("Guessing whole word");
+                if(wordToGuess.word.equals(input)){
+                    guessed = true;
+                    break;
                 }
+            }else{
+                System.out.println("Guessing one letter");
+                char ch = input.charAt(0);
+                guesses.add(ch);
+                for (int i=0; i < wordToGuess.word.length(); i++) {
+                    if(guesses.contains(wordToGuess.word.charAt(i))) {
+                        //first letter printout Upper case
+                        if (i==0) {
+                            System.out.print(Character.toUpperCase(wordToGuess.word.charAt(i)));
+                        } else {
+                            System.out.print(wordToGuess.word.charAt(i));
+                        }
+                        letterCount++;
+                    }else {
+                        System.out.print("-");
+                    }
+                }
+                System.out.println();
             }
-            System.out.println();
+            //char ch = scanner.next().toLowerCase(Locale.ROOT).charAt(0);
+
             if(letterCount == wordToGuess.word.length()){
                 guessed = true;
                 break;
@@ -227,8 +241,8 @@ public class GuessMethods {
 
     }
 
-    public static void readTOP10(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM scores ORDER BY scores_moves ASC LIMIT 10;"; //Right SQL formula
+    public static void readTOP10(Connection conn) throws SQLException { //KRISTINE: table visualization
+        String sql = "SELECT * , ROW_NUMBER () OVER (ORDER BY scores_moves DESC) AS Ranking FROM scores LIMIT 10"; //KRISTINE: added Ranking
 
         Statement statement = conn.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -238,18 +252,19 @@ public class GuessMethods {
         String heading1 = "Ranking";
         String heading2 = "Username";
         String heading3 = "Scores";
-        System.out.println();
+        System.out.println("");
         System.out.printf("%-15s %-15s %15s %n", heading1, heading2, heading3);
         System.out.println("__________________________________________________");
 
         while (resultSet.next()) {
-            int user_ID = resultSet.getInt(1);
+
+            int Ranking = resultSet.getInt(5);
             String username = resultSet.getString(2);
-            //int topic_id = resultSet.getInt(3);
             int scores_moves = resultSet.getInt(4);
 
             String output = "%-15d %-15s %10d";
-            System.out.println(String.format(output, user_ID, username, scores_moves));
+            System.out.println(String.format(output, Ranking, username, scores_moves));
+
         }
 
     }
