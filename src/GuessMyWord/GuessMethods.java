@@ -1,26 +1,26 @@
-package FinalProject;
+package GuessMyWord;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class GuessMethods {
     //readTopics (no need here)
 
     public static void printInstructions() {
-        System.out.println("\nChoose and enter number to take fallowed action:"); //  KRISTINE - CHANGE TO INTRODUCTION TO GAME RULES:
+        System.out.println("\nChoose and enter number to take fallowed action:");
         System.out.println("\t 1 - to play game");
         System.out.println("\t 2 - to add new topic");
         System.out.println("\t 3 - to add new word");
         System.out.println("\t 4 - to see score board");
         System.out.println("\t 5 - to quit game");
-        System.out.println(); //KRISTINE - ADDITIONAL SPACE FOR VISUAL LOOK
     }
 
-    public static void playTheGameAction(Scanner scanner, Connection conn) throws SQLException {
-        //System.out.println("Lets Play! Ready, set, go...");
+    public static void playTheGameAction(Scanner scanner, Connection conn, String userName) throws SQLException {
+        System.out.println("RULES that you shall obey: " +
+                "\n\t•enter letter one by one" +
+                "\n\t•you have maximum 10 guesses per word or ohhh bugger" +
+                "\n\t•uppercase or lowercase guess entries doesn't affect" +
+                "\nLets play! Ready, set, go...\n");
 
         ArrayList<Topic> topics = getTopics(conn);
         printTopics(topics);
@@ -40,11 +40,13 @@ public class GuessMethods {
 
         // get topic words
         ArrayList<TopicWord> words = getWords(conn, currentTopic);
+
+
         // print message
         System.out.println("Here are the words of the game:");
-        // print out all topics
+        // print out all words
         for (int index = 0; index < words.size(); index++) {
-            // get topic by index
+            // get word by index
             TopicWord word = words.get(index);
             // print out word list, no need, just for now for info
             String output = "\t %d. %s ";
@@ -56,21 +58,28 @@ public class GuessMethods {
 
         List<Character> guesses = new ArrayList<Character>();
         System.out.println("Enter a letter");
-        //String letter = scanner.nextLine();
 
-/*        while (scanner.hasNext()) {
-            guesses.add(letter.charAt(0));
-        }*/
+        for (int i=0; i < wordToGuess.word.length(); i++) {
+            System.out.print("-");
+        }
+
+        System.out.println();
+
         boolean guessed = false;
         int letterCount = 0;
         for(int j =0; j < 10; j++){
             letterCount = 0;
-            char ch = scanner.next().charAt(0);
+            char ch = scanner.next().toLowerCase(Locale.ROOT).charAt(0);
             //ch -= 32;
             guesses.add(ch);
             for (int i=0; i < wordToGuess.word.length(); i++) {
                 if(guesses.contains(wordToGuess.word.charAt(i))) {
-                    System.out.print(wordToGuess.word.charAt(i));
+                    //first letter printout Upper case
+                    if (i==0) {
+                        System.out.print(Character.toUpperCase(wordToGuess.word.charAt(i)));
+                    } else {
+                        System.out.print(wordToGuess.word.charAt(i));
+                    }
                     letterCount++;
                 }else {
                     System.out.print("-");
@@ -81,30 +90,25 @@ public class GuessMethods {
                 guessed = true;
                 break;
             }
-
         }
 
         if(guessed){
-            System.out.println("You won");
+            System.out.println("And the winner is - YOU!" +
+                    "\nCongrats, you deserve vacation");
         }else {
-            System.out.println("You suck!");
+            System.out.println("Not guesses word was: " + wordToGuess.word);
+            System.out.println("You suck!" +
+                    "\nWork hard, play harder");
+
         }
 
-/*        for (int i=0; i < wordToGuess.word.length(); i++) {
-            if(guesses.contains(wordToGuess.word.charAt(i))) {
-                System.out.println(wordToGuess.word.charAt(i));
-            }else {
-                System.out.println("-");
-            }
-        }*/
+        insertScoreBoard(conn, userName, currentTopic.topic_id, letterCount);
 
-
-        //System.out.println("Enter wished amount of moves (1-10)");
     }
 
     public static void insertTopic (Connection conn, String topic_name) throws SQLException {
 
-        String sql = "INSERT INTO topics (topic_name) VALUES ('?');";
+        String sql = "INSERT INTO topics (topic_name) VALUES (?);";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setString(1, topic_name);
 
@@ -127,10 +131,10 @@ public class GuessMethods {
 
     public static void insertWords (Connection conn, int topic_id, String word) throws SQLException {
 
-        String sql = "INSERT INTO words (topic_id, word) VALUES (?, '?');";
+        String sql = "INSERT INTO words (topic_id, word) VALUES (?, ?);";
         PreparedStatement preparedStatement = conn.prepareStatement(sql);
         preparedStatement.setInt(1, topic_id);
-        preparedStatement.setString(2, word);
+        preparedStatement.setString(2, word.toLowerCase(Locale.ROOT));
 
         int rowInserted = preparedStatement.executeUpdate();
 
@@ -146,28 +150,59 @@ public class GuessMethods {
         System.out.println("Enter new Word");
         String word = scanner.nextLine();
 
-        getTopics(conn);
-        int topic_id = scanner.nextInt();
+        ArrayList<Topic> topics = getTopics(conn);
+        printTopics(topics);
 
-        insertWords(conn, topic_id , word);
+        // ask person for topic
+        System.out.printf("Select topic where to add [1-%d]\n", topics.size());
+
+        int topicIndex = scanner.nextInt();
+
+        if (topicIndex < 1 || topicIndex > topics.size()) {
+            System.out.println("Invalid topic selected");
+            return; // exit the program
+        }
+
+        // get current topic
+        Topic currentTopic = topics.get(topicIndex - 1);
+
+        insertWords(conn, currentTopic.topic_id , word);
     }
 
     public static void readScores(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM scores;";
+        String sql = "SELECT * FROM scores;"; //Right SQL formula
 
         Statement statement = conn.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
 
+        System.out.println("Score board: ");
         while (resultSet.next()) {
 
             int user_ID = resultSet.getInt(1);
             String username = resultSet.getString(2);
             int topic_id = resultSet.getInt(3);
-            int scores_results = resultSet.getInt(4);
-            int number_of_tries = resultSet.getInt(5);
+            int scores_moves = resultSet.getInt(4);
 
-            String output = "Score board: \n\t ID: %d \n\t Username: %s \n\t Score: %d \n\t Tries: %d";
-            System.out.println(String.format(output, user_ID, username, topic_id, scores_results, number_of_tries));
+            String output = "\n\t ID: %d \n\t Username: %s \n\t Score: %d";
+            System.out.println(String.format(output, user_ID, username, topic_id, scores_moves));
+        }
+
+    }
+
+    public static void insertScoreBoard (Connection conn, String username, int topic_id, int scores_moves) throws SQLException {
+
+        String sql = "INSERT INTO scores (username, topic_id, scores_moves) VALUES (?, ?, ?);";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        preparedStatement.setInt(2, topic_id);
+        preparedStatement.setInt(3, scores_moves);
+
+        int rowInserted = preparedStatement.executeUpdate();
+
+        if(rowInserted > 0) {
+            System.out.println("Your score has been saved");
+        }else {
+            System.out.println("Something went wrong");
         }
 
     }
@@ -210,6 +245,26 @@ public class GuessMethods {
         return words;
     }
 
+    public static ArrayList<ScoreBoard> getScores(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM scores";
+
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        ArrayList<ScoreBoard> scores = new ArrayList<ScoreBoard>();
+
+        while (resultSet.next()) {
+            ScoreBoard score = new ScoreBoard();
+            score.username = resultSet.getString("username");
+            score.topic_id = resultSet.getInt("topic_id");
+            score.scores_moves = resultSet.getInt("scores_moves");
+
+            scores.add(score);
+        }
+
+        return scores;
+    }
+
     public static void printTopics(ArrayList<Topic> topics) {
         System.out.println("Here are the topic of the game:");
         // print out all topics
@@ -233,5 +288,12 @@ class TopicWord {
     int word_id;
     int topic_id;
     String word;
+}
+
+class ScoreBoard {
+    String username;
+    int topic_id;
+    int scores_moves;
+
 }
 

@@ -1,4 +1,4 @@
-package FinalProject;
+package GuessMyWord;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,8 +10,9 @@ public class Main extends GuessMethods {
         // database
         final String dbURL = "jdbc:mysql://localhost:3306/guess_my_word_game";
         final String user = "root";
-        final String password = "Jm111000";
-        char again = 'y';
+        final String password = "0108";
+        char againAction = 'y';
+        char againGame = 'y';
         Scanner scanner = new Scanner(System.in);
 
         // get username
@@ -19,13 +20,21 @@ public class Main extends GuessMethods {
         String userName = scanner.nextLine();
 
         try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
-            printInstructions();
 
-            System.out.println("Please, choose your option:");
-            while (again == 'y') {
+            while (againAction == 'y') {
+                printInstructions();
+
+                System.out.println("Please, choose your option:");
                 char action = scanner.next().charAt(0);
+                scanner.nextLine();
+                
                 if (action == '1') {
-                    playTheGameAction(scanner, conn);
+                    while (againGame == 'y') {
+                        playTheGameAction(scanner, conn, userName);
+
+                        System.out.println("Hey, lets play again? y/n");
+                        againGame = scanner.next().charAt(0);
+                    }
                 } else if (action == '2') {
                     insertTopicAction(scanner, conn);
                 } else if(action == '3') {
@@ -35,12 +44,13 @@ public class Main extends GuessMethods {
                 } else if(action == '5') {
                     break;
                 }
-                System.out.println("Hey, lets play again? y/n");
-                again = scanner.next().charAt(0);
-            }
 
+                System.out.println("Maybe want to see option list? y/n");
+                againAction = scanner.next().charAt(0);
+
+            }
         } catch (SQLException e) {
-            System.out.println("Something went wrong");
+            System.out.println(e.getMessage());
         }
     }
 
