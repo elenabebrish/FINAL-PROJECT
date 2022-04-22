@@ -21,7 +21,7 @@ IMPLEMENTED GAME LOGIC:
   5-	To quit game
 
 3.	If the Player decides to play game (action 1), he will be suggested to choose the topic ID from the list of 5 topics existing in the database. Each topic contains 10 words. The word to quess is chosen at random.
-4.	The Player enters a letter. If the word contains such a letter, it will be displayed as, for example: --a--- and the Players gets a message “You won”. If there is no such a letter in the word, the Players gets a message “You suck!”.
+4.	The Player enters a letter. If the word contains such a letter, it will be displayed as, for example: --a--- and if tries limit is not exceeded it will be suggested to the Player to continue guessing letters. When all the letters of the word are guessed, the Players gets a message “You won”. If the word is nt guessed and tries limit is exceeded, the Players gets a message “You suck!”.
 5.	When the word is guessed, the Player is invited to play one more time: “Hey, let’s play again? y/n”
 •	y - game goes back to starting point and asks first question
 •	n - game exits
