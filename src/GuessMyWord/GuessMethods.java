@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.*;
 
 public class GuessMethods {
-    //readTopics (no need here)
 
     public static void printInstructions() {
         System.out.println("\nChoose and enter number to take fallowed action:");
@@ -14,6 +13,7 @@ public class GuessMethods {
         System.out.println("\t 4 - to see score board");
         System.out.println("\t 5 - to quit game");
     }
+
 
     public static void playTheGameAction(Scanner scanner, Connection conn, String userName) throws SQLException {
         System.out.println("RULES that you shall obey: " +
@@ -30,8 +30,8 @@ public class GuessMethods {
         int topicIndex = scanner.nextInt();
         // check if topic is in range
         if (topicIndex < 1 || topicIndex > topics.size()) {
-            System.out.println("Invalid topic selected");
-            return; // exit the program
+            System.out.println("Ohh schnitzel, invalid topic selected");
+            return; // Hey, lets play again? y/n
         }
 
         // get current topic
@@ -40,18 +40,6 @@ public class GuessMethods {
 
         // get topic words
         ArrayList<TopicWord> words = getWords(conn, currentTopic);
-
-
-        // print message
-        System.out.println("Here are the words of the game:");
-        // print out all words
-        for (int index = 0; index < words.size(); index++) {
-            // get word by index
-            TopicWord word = words.get(index);
-            // print out word list, no need, just for now for info
-            String output = "\t %d. %s ";
-            System.out.printf((output) + "\n", index + 1, word.word);
-        }
 
         Random random = new Random();
         TopicWord wordToGuess = words.get(random.nextInt(words.size()));
@@ -96,7 +84,7 @@ public class GuessMethods {
             System.out.println("And the winner is - YOU!" +
                     "\nCongrats, you deserve vacation");
         }else {
-            System.out.println("Not guesses word was: " + wordToGuess.word);
+            System.out.println("A hard nut to crack was: " + wordToGuess.word);
             System.out.println("You suck!" +
                     "\nWork hard, play harder");
 
@@ -105,6 +93,7 @@ public class GuessMethods {
         insertScoreBoard(conn, userName, currentTopic.topic_id, letterCount);
 
     }
+
 
     public static void insertTopic (Connection conn, String topic_name) throws SQLException {
 
@@ -117,7 +106,7 @@ public class GuessMethods {
         if(rowInserted > 0) {
             System.out.println("New Topic was added");
         }else {
-            System.out.println("Something went wrong");
+            System.out.println("Ouch.. Something went wrong");
         }
 
     }
@@ -128,6 +117,37 @@ public class GuessMethods {
 
         insertTopic(conn, topic);
     }
+
+    public static ArrayList<Topic> getTopics(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM topics";
+
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        ArrayList<Topic> topics = new ArrayList<Topic>();
+
+        while (resultSet.next()) {
+            Topic topic = new Topic();
+            topic.topic_id = resultSet.getInt("topic_id");
+            topic.topic_name = resultSet.getString("topic_name");
+            topics.add(topic);
+        }
+
+        return topics;
+    }
+
+    public static void printTopics(ArrayList<Topic> topics) {
+        System.out.println("Here are the topic of the game:");
+        // print out all topics
+        for (int index = 0; index < topics.size(); index++) {
+            // get topic by index
+            Topic topic = topics.get(index);
+            // print our topic information
+            String output = "\t %d. %s";
+            System.out.printf((output) + "%n", index + 1, topic.topic_name);
+        }
+    }
+
 
     public static void insertWords (Connection conn, int topic_id, String word) throws SQLException {
 
@@ -141,7 +161,7 @@ public class GuessMethods {
         if(rowInserted > 0) {
             System.out.println("New Word was added");
         }else {
-            System.out.println("Something went wrong");
+            System.out.println("Snap.. Something went wrong");
         }
 
     }
@@ -169,62 +189,6 @@ public class GuessMethods {
         insertWords(conn, currentTopic.topic_id , word);
     }
 
-    public static void readScores(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM scores;"; //Right SQL formula
-
-        Statement statement = conn.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-
-        System.out.println("Score board: ");
-        while (resultSet.next()) {
-
-            int user_ID = resultSet.getInt(1);
-            String username = resultSet.getString(2);
-            int topic_id = resultSet.getInt(3);
-            int scores_moves = resultSet.getInt(4);
-
-            String output = "\n\t ID: %d \n\t Username: %s \n\t Score: %d";
-            System.out.println(String.format(output, user_ID, username, topic_id, scores_moves));
-        }
-
-    }
-
-    public static void insertScoreBoard (Connection conn, String username, int topic_id, int scores_moves) throws SQLException {
-
-        String sql = "INSERT INTO scores (username, topic_id, scores_moves) VALUES (?, ?, ?);";
-        PreparedStatement preparedStatement = conn.prepareStatement(sql);
-        preparedStatement.setString(1, username);
-        preparedStatement.setInt(2, topic_id);
-        preparedStatement.setInt(3, scores_moves);
-
-        int rowInserted = preparedStatement.executeUpdate();
-
-        if(rowInserted > 0) {
-            System.out.println("Your score has been saved");
-        }else {
-            System.out.println("Something went wrong");
-        }
-
-    }
-
-    public static ArrayList<Topic> getTopics(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM topics";
-
-        Statement statement = conn.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-
-        ArrayList<Topic> topics = new ArrayList<Topic>();
-
-        while (resultSet.next()) {
-            Topic topic = new Topic();
-            topic.topic_id = resultSet.getInt("topic_id");
-            topic.topic_name = resultSet.getString("topic_name");
-            topics.add(topic);
-        }
-
-        return topics;
-    }
-
     public static ArrayList<TopicWord> getWords(Connection conn, Topic topic) throws SQLException {
         String sql = "SELECT * FROM words WHERE topic_id = ?";
         // prepare statement
@@ -245,8 +209,48 @@ public class GuessMethods {
         return words;
     }
 
+
+
+    public static void insertScoreBoard (Connection conn, String username, int topic_id, int scores_moves) throws SQLException {
+
+        String sql = "INSERT INTO scores (username, topic_id, scores_moves) VALUES (?, ?, ?);";
+        PreparedStatement preparedStatement = conn.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        preparedStatement.setInt(2, topic_id);
+        preparedStatement.setInt(3, scores_moves);
+
+        int rowInserted = preparedStatement.executeUpdate();
+
+        if(rowInserted > 0) {
+            System.out.println("Your score has been saved");
+        }else {
+            System.out.println("Yikes.. Something went wrong");
+        }
+
+    }
+
+    public static void readScores(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM scores;"; //Right SQL formula
+
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+
+        System.out.println("Score board: ");
+        while (resultSet.next()) {
+
+            int user_ID = resultSet.getInt(1);
+            String username = resultSet.getString(2);
+            int topic_id = resultSet.getInt(3);
+            int scores_moves = resultSet.getInt(4);
+
+            String output = "\n\t ID: %d \n\t Username: %s \n\t Score: %d";
+            System.out.println(String.format(output, user_ID, username, topic_id, scores_moves));
+        }
+
+    } //read scores
+
     public static ArrayList<ScoreBoard> getScores(Connection conn) throws SQLException {
-        String sql = "SELECT * FROM scores";
+        String sql = "SELECT * FROM scores ORDER BY scores_moves ASC LIMIT 10;";
 
         Statement statement = conn.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -265,15 +269,15 @@ public class GuessMethods {
         return scores;
     }
 
-    public static void printTopics(ArrayList<Topic> topics) {
-        System.out.println("Here are the topic of the game:");
-        // print out all topics
-        for (int index = 0; index < topics.size(); index++) {
-            // get topic by index
-            Topic topic = topics.get(index);
-            // print our topic information
-            String output = "\t %d. %s";
-            System.out.printf((output) + "%n", index + 1, topic.topic_name);
+    public static void printScoreBoard(ArrayList<ScoreBoard> scoreBoards) {
+        System.out.println("Here are the Score Board of the game:");
+        // print out all scores
+        for (int index = 0; index < scoreBoards.size(); index++) {
+            // get score board by index
+            ScoreBoard scoreBoard = scoreBoards.get(index);
+            // print our score information
+            String output = "TOP - best of the best: \n\t %d. Username: %s   Topic nr: %d    Moves made: %d";
+            System.out.printf((output) + "\n", index + 1, scoreBoard.username, scoreBoard.topic_id, scoreBoard.scores_moves);
         }
     }
 

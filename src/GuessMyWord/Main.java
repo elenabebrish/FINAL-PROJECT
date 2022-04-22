@@ -10,7 +10,7 @@ public class Main extends GuessMethods {
         // database
         final String dbURL = "jdbc:mysql://localhost:3306/guess_my_word_game";
         final String user = "root";
-        final String password = "0108";
+        final String password = "Jm111000";
         char againAction = 'y';
         char againGame = 'y';
         Scanner scanner = new Scanner(System.in);
@@ -27,7 +27,7 @@ public class Main extends GuessMethods {
                 System.out.println("Please, choose your option:");
                 char action = scanner.next().charAt(0);
                 scanner.nextLine();
-                
+
                 if (action == '1') {
                     while (againGame == 'y') {
                         playTheGameAction(scanner, conn, userName);
@@ -50,7 +50,7 @@ public class Main extends GuessMethods {
 
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Ooops.. Something went wrong");
         }
     }
 
