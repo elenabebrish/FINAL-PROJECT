@@ -18,8 +18,7 @@ CREATE TABLE scores(
 user_ID INT NOT NULL AUTO_INCREMENT,
 username VARCHAR(45) NOT NULL,
 topic_id INT REFERENCES topics(topic_id),
-scores_results INT,
-number_of_tries INT,
+scores_moves INT,
 PRIMARY KEY (user_ID)
 );
 
@@ -88,11 +87,11 @@ INSERT INTO words (topic_id, word) VALUES (5, 'poland');
 
 SELECT * FROM words;
 
-INSERT INTO scores (username, topic_id, scores_results, number_of_tries) VALUES ('snowflake', 3, 4, 6);
-INSERT INTO scores (username, topic_id, scores_results, number_of_tries) VALUES ('nacho1', 2, 3, 8);
-INSERT INTO scores (username, topic_id, scores_results, number_of_tries) VALUES ('Tobby', 4, 6, 5);
-INSERT INTO scores (username, topic_id, scores_results, number_of_tries) VALUES ('Kitty', 5, 8, 9);
-INSERT INTO scores (username, topic_id, scores_results, number_of_tries) VALUES ('YellowBee', 1, 1, 3);
+INSERT INTO scores (username, topic_id, scores_moves) VALUES ('snowflake', 3, 4);
+INSERT INTO scores (username, topic_id, scores_moves) VALUES ('nacho1', 2, 3);
+INSERT INTO scores (username, topic_id, scores_moves) VALUES ('Tobby', 4, 6);
+INSERT INTO scores (username, topic_id, scores_moves) VALUES ('Kitty', 5, 8);
+INSERT INTO scores (username, topic_id, scores_moves) VALUES ('YellowBee', 1, 1);
 
 SELECT * FROM scores;
 
@@ -110,4 +109,5 @@ SELECT * FROM words WHERE topic_id = 4;
 
 -- Retrieve EU countries words by topic ID
 SELECT * FROM words WHERE topic_id = 5;
+
 
