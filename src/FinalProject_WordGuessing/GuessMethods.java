@@ -1,10 +1,10 @@
-package GuessMyWord;
+package FinalProject_WordGuessing;
 
 import java.sql.*;
 import java.util.*;
 
 public class GuessMethods {
-    //static Scanner scanner = new Scanner(System.in);
+    static Scanner scanner = new Scanner(System.in);
 
     public static void printInstructions() {
         System.out.println("\nChoose and enter number to take fallowed action:");
@@ -16,14 +16,15 @@ public class GuessMethods {
     }
 
 
-    public static void playTheGameAction(Scanner scanner, Connection conn, String userName) throws SQLException {
+    public static void playTheGameAction(Connection conn, String userName) throws SQLException {
         System.out.println("RULES that you shall obey: " +
                 "\n\t•enter letter one by one" +
                 "\n\t•you have maximum 10 guesses per word or ohhh bugger" +
-                "\n\t•uppercase or lowercase guess entries doesn't affect" +
+                "\n\t•uppercase or lowercase guess entries are equally rocking" +
                 "\nLets play! Ready, set, go...\n");
 
         ArrayList<Topic> topics = getTopics(conn);
+
         printTopics(topics);
 
         // ask person for topic
@@ -62,13 +63,13 @@ public class GuessMethods {
 
             String input = scanner.nextLine().toLowerCase();
             if(input.length() > 1){
-                System.out.println("Guessing whole word");
+                //System.out.println("Guessing whole word");
                 if(wordToGuess.word.equals(input)){
                     guessed = true;
                     break;
                 }
             }else{
-                System.out.println("Guessing one letter");
+                //System.out.println("Guessing one letter");
                 char ch = input.charAt(0);
                 guesses.add(ch);
                 for (int i=0; i < wordToGuess.word.length(); i++) {
@@ -124,7 +125,7 @@ public class GuessMethods {
 
     }
 
-    public static void insertTopicAction(Scanner scanner, Connection conn) throws SQLException {
+    public static void insertTopicAction(Connection conn) throws SQLException {
         System.out.println("Enter new Topic");
         String topic = scanner.nextLine();
 
@@ -179,7 +180,7 @@ public class GuessMethods {
 
     }
 
-    public static void insertWordAction(Scanner scanner, Connection conn) throws SQLException {
+    public static void insertWordAction(Connection conn) throws SQLException {
         System.out.println("Enter new Word");
         String word = scanner.nextLine();
 
@@ -264,9 +265,7 @@ public class GuessMethods {
 
             String output = "%-15d %-15s %10d";
             System.out.println(String.format(output, Ranking, username, scores_moves));
-
         }
-
     }
 
 }
@@ -281,4 +280,3 @@ class TopicWord {
     int topic_id;
     String word;
 }
-
