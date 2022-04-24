@@ -21,11 +21,11 @@ IMPLEMENTED GAME LOGIC:
   5-	To quit game
 
 3.	If the Player decides to play game (action 1), he will be suggested to choose the topic ID from the list of 5 topics existing in the database. Each topic contains 10 words. The word to quess is chosen at random.
-4.	The Player enters a letter. If the word contains such a letter, it will be displayed as, for example: --a--- and if tries limit is not exceeded it will be suggested to the Player to continue guessing letters. When all the letters of the word are guessed, the Players gets a message “You won”. If the word is nt guessed and tries limit is exceeded, the Players gets a message “You suck!”.
+4.	The Player enters a letter. If the word contains such a letter, it will be displayed as, for example: --a--- and if tries limit is not exceeded it will be suggested to the Player to continue guessing letters. When all the letters of the word are guessed, the Players gets a message “And the winner is - YOU! Congrats, you deserve vacation”. If the word is nt guessed and tries limit is exceeded, the Players gets a message “A hard nut to crack was: ..."You suck! Work hard, play harder”.
 5.	When the word is guessed, the Player is invited to play one more time: “Hey, let’s play again? y/n”
 •	y - game goes back to starting point and asks first question
 •	n - game exits
-3.	If the Player chooses the 2nd action (adding new topic) or the 3rd action (adding new word for the existing topic), he is invited to add new topic and words for it. If it is done successfully, there will be a message: “New topic was added”, “New word was added”. If no, the message will be: “Ooops...Something went wrong”.
+3.	If the Player chooses the 2nd action (adding new topic) or the 3rd action (adding new word for the existing topic), he is invited to add new topic and words for it. If it is done successfully, there will be a message: “New topic was added”, “New word was added”. If no, the message will be: “Ouch...Something went wrong”.
 4.	If the Player chooses the 4th action (to see score board), then the results of the previous games (ID, username, score, number of tries) will be displayed.
 5.	Choosing the 5th action, the game will stop for the Player.
 
