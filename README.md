@@ -3,14 +3,14 @@ OBJECTIVE:
 This is final project for Java beginner course in program "She goes tech". It's main agenda is to showcase learned Java basic skills by creating game, including simple database using MySQL Workbench.
 
 GAME DESCRIPTION:
-GuessMyWord is played by 1 player. The Player’s goal is to guess all letters of the word from the chosen topic using as less tries as possible. Each topic has its ID and each word has its ID and is unique.
+GuessMyWord is played by 1 player. The Player’s goal is to guess the word from the chosen topic straight away or by letters using as less tries as possible but not more than 10. Each topic has its ID and each word has its ID and is unique.
 
 GAME RULES:
 1.	The player starts the game.
 2.	The Player writes its name and then chooses one of 5 suggested topics.
 3.	The game chooses random word from this topic for user to guess it.
 4.	The player guesses one letter after another until the whole word is written in display
-5.	After the game the Player can see score board with results of the game: username, score, number of tries
+5.	After the game the Player can see score board with results of the game of TOP-10 best players: ranking, username, score.
 IMPLEMENTED GAME LOGIC:
 1.	Game starts with suggestion to enter Player’s name: "Please enter your username"
 2.	Then the Player is invited to choose a necessary action: “Choose and enter number to take followed action”
@@ -25,7 +25,7 @@ IMPLEMENTED GAME LOGIC:
 5.	When the word is guessed, the Player is invited to play one more time: “Hey, let’s play again? y/n”
 •	y - game goes back to starting point and asks first question
 •	n - game exits
-3.	If the Player chooses the 2nd action (adding new topic) or the 3rd action (adding new word for the existing topic), he is invited to add new topic and words for it. If it is done successfully, there will be a message: “New topic was added”, “New word was added”. If no, the message will be: “Something went wrong”.
+3.	If the Player chooses the 2nd action (adding new topic) or the 3rd action (adding new word for the existing topic), he is invited to add new topic and words for it. If it is done successfully, there will be a message: “New topic was added”, “New word was added”. If no, the message will be: “Ooops...Something went wrong”.
 4.	If the Player chooses the 4th action (to see score board), then the results of the previous games (ID, username, score, number of tries) will be displayed.
 5.	Choosing the 5th action, the game will stop for the Player.
 
