@@ -93,7 +93,7 @@ INSERT INTO scores (username, topic_id, scores_moves) VALUES ('Tobby', 4, 6);
 INSERT INTO scores (username, topic_id, scores_moves) VALUES ('Kitty', 5, 8);
 INSERT INTO scores (username, topic_id, scores_moves) VALUES ('YellowBee', 1, 1);
 
-SELECT * FROM scores ORDER BY scores_moves ASC LIMIT 10;
+SELECT * , ROW_NUMBER () OVER (ORDER BY scores_moves DESC) AS Ranking FROM scores LIMIT 10;
 
 -- Retrieve Animal words by topic ID
 SELECT * FROM words WHERE topic_id = 1;
